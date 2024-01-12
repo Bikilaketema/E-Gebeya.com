@@ -1,0 +1,25 @@
+#about-container {
+    display: flex;
+    flex-direction: column;
+    padding: 10%;
+    padding-top: 5%;
+    align-self: center;
+    margin-top: 100px;
+}
+
+@media (min-width:768px) {
+
+    #about-container {
+        margin-top: 80px;
+        padding-top: 0;
+    }
+
+    h1 {
+        font-size: 3vw;
+    }
+
+    p {
+        font-size: 1vw;
+    }
+    
+}

@@ -1,0 +1,65 @@
+<link href="{{ url_for('static', filename='modal.css') }}" rel="stylesheet">
+
+<div class="modal fade" id="Modal-Confirm{{ item.id }}"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ModalLabel">
+          {{ item.title }}
+        </h5>
+        <button type="button" class="close"
+                data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="modal-body modal-container">
+        <form method="POST">
+          {{ purchase_form.hidden_tag() }}
+          <h4 class="text-center">Are you sure you want to buy {{ item.title }} for {{ item.price }}$ ?</h4>
+          <img alt="{{ item.title }}" src="{{ item.image }}">
+          <input id="purchased_item" name="purchased_item" type="hidden" value="{{ item.title }}">
+          {{ purchase_form.submit(class="btn btn-outline-success btn-block") }}
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        
+        <button type="button" class="modal-btn"
+                data-dismiss="modal">Cancel
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="Modal-MoreInfo{{ item.id }}"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ModalLabel">
+          {{ item.title }}
+        </h5>
+        <button type="button" class="close"
+                data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="modal-body modal-container">
+            <img alt="{{ item.title }}" src="{{ item.image }}">
+            <h2>Price: ${{ item.price }}</h2>
+            <h3>{{ item.description }}</h3>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="modal-btn" data-dismiss="modal"> Close </button>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact us{% endblock %}
+{% block css %}
+<link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='signup.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div id="signup-container">
+    <h1>Contact Us</h1>
+    <p>If you have any questions, feedback, or inquiries, please don't hesitate<br>to reach out to us. Our dedicated
+        team is here to assist you.</p>
+
+    <form>
+        <label for="name">Name:</label><br>
+        <input id="name" id="c-textbox" name="name" required type="text"><br>
+
+        <label for="email">Email:</label><br>
+        <input id="email" id="c-textbox" name="email" required type="email"><br>
+
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" required></textarea><br><br>
+
+        <button id="signup-button" type="submit">Submit</button>
+        <br>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ current_user.username }}'s Dashboard{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='signup.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='index.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+{% include 'includes/delete_modal.html' %}
+
+<h1>Welcome to your Dashboard, {{ current_user.username }}!</h1>
+<h3>You have successfully logged in. Now you can buy what you want!</h3>
+<p>Email: {{ current_user.email }}</p>
+<p>Phone Number: {{ current_user.phone }}</p>
+<p>Date of Birth: {{ current_user.dob }}</p>
+<p>You have: {{ current_user.prettier_budget }} in your wallet.</p>
+
+
+<h1 style="margin-bottom: 10px;">Purchased products</h1>
+
+<div id="main-container">
+    {% for item in owned_items %}
+    {% include 'includes/item_modal.html' %}
+    <div id="product-card">
+        <img alt="{{ item.title }}" src="{{ item.image }}">
+        <h3>{{ item.title[:30] + '...' }}</h3>
+        <p>{{ item.description[:50] + '...' }}</p>
+        <p>Price: ${{ item.price }}</p>
+        <button class="orderbtn" data-toggle="modal" data-target="#Modal-MoreInfo{{ item.id }}">More Info</button>
+    </div>
+    {% endfor %}
+
+</div>
+
+<button class="dashboard-button" style="margin-top: 10px;"><a href="{{ url_for('market') }}">Home</a></button>
+<button class="dashboard-button" data-toggle="modal" data-target="#Modal-DeleteAccount{{ current_user.username }}">Delete my account</button>
+<button class="dashboard-button"><a href="{{ url_for('update_info') }}">Update my Info</a></button>
+<button class="dashboard-button"><a href="{{ url_for('change_password') }}">Change password</a></button>
+
+
+
+
+
+{% endblock %}

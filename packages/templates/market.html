@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Market{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='index.css') }}" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+<!-- Your index.html content here -->
+
+<img id="banner" src="{{ url_for('static', filename='images/banner.jpg') }}">
+
+<div id="main-container">
+
+    {% for item in products %}
+    {% include 'includes/item_modal.html' %}
+    <div id="product-card">
+        <img alt="{{ item.title }}" src="{{ item.image }}">
+        <h3>{{ item.title[:30] + '...' }}</h3>
+        <p>{{ item.description[:50] + '...' }}</p>
+        <p>Price: ${{ item.price }}</p>
+        <button class="orderbtn" data-toggle="modal" data-target="#Modal-MoreInfo{{ item.id }}">More Info</button>
+        <button class="orderbtn" data-toggle="modal" data-target="#Modal-Confirm{{ item.id }}">Purchase Item</button>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+
+{% endblock %}
