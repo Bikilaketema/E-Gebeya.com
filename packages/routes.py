@@ -68,6 +68,8 @@ def category(category):
 # route to display the sign-up page
 @app.route('/signup',methods=['GET','POST'])
 def signup():
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
     form = SignupForm()
     if form.validate_on_submit():
         user_to_create = User(username=form.username.data,
@@ -86,18 +88,26 @@ def signup():
             flash(f'{error_msg}',category='danger')
     return render_template('signup.html',form=form)
 
-#rout to log in the user
-@app.route('/login', methods=['GET','POST'])
+# Route to log in the user
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
     form = LoginForm()
     if form.validate_on_submit():
         attempted_user = User.query.filter_by(username=form.username.data).first()
-        if attempted_user and attempted_user.check_password_correction (attempted_password=form.password.data):
-            login_user(attempted_user)
-            flash(f'Successfully logged in as {attempted_user.username}!', category='success')
-            return redirect(url_for('dashboard'))
+
+        if attempted_user:
+            if attempted_user.check_password_correction(attempted_password=form.password.data):
+                login_user(attempted_user)
+                flash(f'Successfully logged in as {attempted_user.username}!', category='success')
+                return redirect(url_for('dashboard'))
+            else:
+                flash('Username or password is wrong! Please try again.', category='danger')
         else:
-            flash('Username or password is wrong! Please try again.',category='danger')
+            flash('Account with this username does not exist. Please sign up.', category='danger')
+            return redirect(url_for('signup'))
+            # You can redirect to the signup page or render a specific template for account creation.
 
     return render_template('login.html', form=form)
 
