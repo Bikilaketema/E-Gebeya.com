@@ -64,6 +64,21 @@ body {
     margin: 5%;
   }
 
+  .add-tocart-btn {
+    background-color: #4CAF50;
+    font-size: 1vw;
+    width: 80%;
+    height: 20%;
+    min-width: 30px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    flex-grow: 0;
+    color: white;
+    margin: 5%;
+    height: 50px;
+  }
+
 #banner {
     width: 100%;
 }

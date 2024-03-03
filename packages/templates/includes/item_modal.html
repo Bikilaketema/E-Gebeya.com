@@ -1,35 +1,25 @@
 <link href="{{ url_for('static', filename='modal.css') }}" rel="stylesheet">
 
-<div class="modal fade" id="Modal-Confirm{{ item.id }}"
-     tabindex="-1"
-     aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+<!-- Checkout Modal -->
+<div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="ModalLabel">
-          {{ item.title }}
-        </h5>
-        <button type="button" class="close"
-                data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true"></span>
+        <h5 class="modal-title" id="checkoutModalLabel">Checkout</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body modal-container">
+      <div class="modal-body">
         <form method="POST">
-          {{ purchase_form.hidden_tag() }}
-          <h4 class="text-center">Are you sure you want to buy {{ item.title }} for {{ item.price }}$ ?</h4>
-          <img alt="{{ item.title }}" src="{{ item.image }}">
-          <input id="purchased_item" name="purchased_item" type="hidden" value="{{ item.title }}">
-          {{ purchase_form.submit(class="btn btn-outline-success btn-block") }}
+          <h4 class="text-center">Are you sure you want to buy the following items?</h4>
+          <!-- List of items in the cart -->
+
+          <button type="submit" class="btn btn-success btn-block">Confirm Checkout</button>
         </form>
       </div>
-
       <div class="modal-footer">
-        
-        <button type="button" class="modal-btn"
-                data-dismiss="modal">Cancel
-        </button>
-
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>

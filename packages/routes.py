@@ -2,9 +2,12 @@ from flask import render_template, redirect,url_for,flash, request
 from packages import app,bcrypt
 from packages import db
 from packages.forms import SignupForm, LoginForm, PurchaseItemForm, UpdateInfoForm, DeleteAccountForm, ChangePasswordForm
-from packages.models import Product, Category, User
+from packages.models import Product, Category, User, Cart, Order, OrderItem
 from flask_login import login_user,login_required,logout_user,current_user
 from flask_bcrypt import check_password_hash, generate_password_hash
+from flask import session
+from sqlalchemy import desc
+from sqlalchemy.orm import joinedload
 
 
 # route to display the homepage of the website
@@ -13,8 +16,8 @@ from flask_bcrypt import check_password_hash, generate_password_hash
 def index():
     return render_template('index.html')
 
-#route to display the market page of the webiste
-@app.route('/market', methods=['GET','POST'])
+# Route to display the market page of the website
+@app.route('/market', methods=['GET', 'POST'])
 @login_required
 def market():
     purchase_form = PurchaseItemForm()
@@ -23,15 +26,14 @@ def market():
         p_item_object = Product.query.filter_by(title=purchased_item).first()
         if p_item_object:
             if current_user.can_purchase(p_item_object):
-                p_item_object.owner = current_user.id
-                current_user.budget -= p_item_object.price
-                db.session.commit()
-                flash(f"Congrats! You have successfully purchased {p_item_object.title} for ${p_item_object.price}.",category='success')
-                return redirect(url_for('market'))
+                # Add the item to the cart
+                Cart.add_to_cart(user_id=current_user.id, product_id=p_item_object.id, quantity=1)
+                flash(f"{p_item_object.title} added to your cart.", category='success')
             else:
-                flash(f"Unfortunately you don't have enough money to purchase {p_item_object.title}.",category='danger')
+                flash(f"Unfortunately you don't have enough money to purchase {p_item_object.title}.", category='danger')
+        return redirect(url_for('market'))
 
-    products_data = Product.query.filter_by(owner=None)
+    products_data = Product.query.all()
     return render_template('market.html', products=products_data, purchase_form=purchase_form)
 
 
@@ -44,26 +46,111 @@ def products():
 
     return render_template('products.html', categories=categories)
 
-#route to display the products by their category
-@app.route('/category/<string:category>', methods=['GET','POST'])
+# Route to display the products by their category
+@app.route('/category/<string:category>', methods=['GET', 'POST'])
 @login_required
 def category(category):
     purchase_form = PurchaseItemForm()
-    products = Product.query.filter_by(category=category,owner=None).all()
+    products = Product.query.filter_by(category=category).all()
     if request.method == "POST":
         purchased_item = request.form.get('purchased_item')
         p_item_object = Product.query.filter_by(title=purchased_item).first()
         if p_item_object:
             if current_user.can_purchase(p_item_object):
-                p_item_object.owner = current_user.id
-                current_user.budget -= p_item_object.price
-                db.session.commit()
-                flash(f"Congrats! You have successfully purchased {p_item_object.title} for ${p_item_object.price}.",category='success')
-                return redirect(url_for('category', category=category))
+                # Add the item to the cart
+                Cart.add_to_cart(user_id=current_user.id, product_id=p_item_object.id, quantity=1)
+                flash(f"{p_item_object.title} added to your cart.", category='success')
+                # Store the category information in the session
+                session['last_category'] = category
             else:
-                flash(f"Unfortunately you don't have enough money to purchase {p_item_object.title}.",category='danger')
+                flash(f"Unfortunately you don't have enough money to purchase {p_item_object.title}.", category='danger')
+
+        # Redirect back to the same category page
+        return redirect(url_for('category', category=category))
 
     return render_template('category.html', category=category, products=products, purchase_form=purchase_form)
+
+
+# cart route
+@app.route('/cart', methods=['GET','POST'])
+@login_required
+def cart():
+    purchase_form = PurchaseItemForm()  # Assuming PurchaseItemForm is defined
+    cart_entries = Cart.query.filter_by(user_id=current_user.id).all()
+    products_in_cart = []
+    total_price = 0
+    
+    for cart_entry in cart_entries:
+        product = Product.query.get(cart_entry.product_id)
+        products_in_cart.append((product, cart_entry.quantity))
+        total_price += product.price * cart_entry.quantity
+    
+    return render_template('cart.html', products_in_cart=products_in_cart, total_price=total_price, purchase_form=purchase_form)
+
+
+@app.route('/delete_item_from_cart/<int:item_id>', methods=['POST'])
+@login_required
+def delete_item_from_cart(item_id):
+    # Find the cart entry for the item
+    cart_entry = Cart.query.filter_by(user_id=current_user.id, product_id=item_id).first()
+    if cart_entry:
+        # Delete the cart entry
+        db.session.delete(cart_entry)
+        db.session.commit()
+        flash('Item deleted from cart.', 'success')
+    else:
+        flash('Item not found in cart.', 'danger')
+
+    # Redirect back to the cart page
+    return redirect(url_for('cart'))
+
+
+@app.route('/checkout', methods=['POST'])
+@login_required
+def checkout():
+    # Retrieve user's cart items
+    cart_items = Cart.query.filter_by(user_id=current_user.id).all()
+
+    if not cart_items:
+        flash('Your cart is empty.', 'error')
+        return redirect(url_for('cart'))
+
+    # Calculate total price
+    total_price = sum(cart_item.product.price * cart_item.quantity for cart_item in cart_items)
+
+    # Check if user can afford all items
+    if not current_user.can_afford_total(total_price):
+        flash("You don't have enough budget to purchase all items in your cart.", 'error')
+        return redirect(url_for('cart'))
+
+    # Create an order
+    order = Order(user_id=current_user.id, total_price=total_price)
+    db.session.add(order)
+    db.session.commit()
+
+    # Create order items
+    for cart_item in cart_items:
+        order_item = OrderItem(
+            order_id=order.id,
+            product_id=cart_item.product_id,
+            quantity=cart_item.quantity,
+            product_price=cart_item.product.price
+        )
+        db.session.add(order_item)
+
+    # Update user's budget
+    current_user.budget -= total_price
+    db.session.commit()
+
+    # Clear the user's cart
+    Cart.query.filter_by(user_id=current_user.id).delete()
+    db.session.commit()
+
+    flash('Your order has been placed successfully!', 'success')
+    return redirect(url_for('dashboard'))  # Redirect to orders page or any other desired page
+
+
+
 
 # route to display the sign-up page
 @app.route('/signup',methods=['GET','POST'])
@@ -118,12 +205,11 @@ def logout():
     flash(f'You have been logged out!',category='info')
     return redirect(url_for('index'))
 
-#route to display the dashboard of the user
+
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
     purchase_form = PurchaseItemForm()
-    owned_items = Product.query.filter_by(owner=current_user.id)
     delete_form = DeleteAccountForm()
 
     if delete_form.validate_on_submit():
@@ -141,10 +227,30 @@ def dashboard():
             flash('Your account has been deleted. We are sorry to see you go.', 'danger')
 
             return redirect(url_for('index'))
-    
-    return render_template('dashboard.html', user=current_user, owned_items=owned_items, purchase_form=purchase_form, delete_form=delete_form)
+
+    # Fetch pending orders and associated items using a single query
+    user_pending_orders = Order.query.filter_by(user_id=current_user.id, status='Pending').options(joinedload(Order.items)).order_by(desc(Order.created_at)).all()
+
+    # Initialize a dictionary to store ordered items and their quantities
+    ordered_items = {}
+
+    # Fetch items and their quantities from each pending order
+    for order in user_pending_orders:
+        for order_item in order.items:
+            product_id = order_item.product_id
+            quantity = order_item.quantity
+            if product_id in ordered_items:
+                ordered_items[product_id]['quantity'] += quantity
+            else:
+                product = Product.query.get(product_id)
+                if product:
+                    ordered_items[product_id] = {'product': product, 'quantity': quantity}
+
+    return render_template('dashboard.html', user=current_user, ordered_items=ordered_items.values(), purchase_form=purchase_form, delete_form=delete_form)
 
 
+
+#Route to update the user details
 @app.route('/update', methods=['GET', 'POST'])
 @login_required  # Requires the user to be logged in to access this route
 def update_info():

@@ -5,16 +5,12 @@
 {% block css %}
 <link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='index.css') }}" rel="stylesheet">
-
 {% endblock %}
 
 {% block content %}
 <!-- Your index.html content here -->
-
 <img id="banner" src="{{ url_for('static', filename='images/banner.jpg') }}">
-
 <div id="main-container">
-
     {% for item in products %}
     {% include 'includes/item_modal.html' %}
     <div id="product-card">
@@ -23,12 +19,12 @@
         <p>{{ item.description[:50] + '...' }}</p>
         <p>Price: ${{ item.price }}</p>
         <button class="orderbtn" data-toggle="modal" data-target="#Modal-MoreInfo{{ item.id }}">More Info</button>
-        <button class="orderbtn" data-toggle="modal" data-target="#Modal-Confirm{{ item.id }}">Purchase Item</button>
-
+        <!-- Form to add item to cart -->
+        <form action="{{ url_for('market') }}" method="POST">
+            <input type="hidden" name="purchased_item" value="{{ item.title }}">
+            <button type="submit" class="orderbtn add-tocart-btn">Add to cart</button>
+        </form>
     </div>
     {% endfor %}
-
 </div>
-
-
 {% endblock %}

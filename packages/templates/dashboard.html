@@ -18,30 +18,30 @@
 <p>Date of Birth: {{ current_user.dob }}</p>
 <p>You have: {{ current_user.prettier_budget }} in your wallet.</p>
 
+<h1 style="margin-bottom: 10px;">Your pending orders!</h1>
+{% if ordered_items %}
 
-<h1 style="margin-bottom: 10px;">Purchased products</h1>
-
-<div id="main-container">
-    {% for item in owned_items %}
-    {% include 'includes/item_modal.html' %}
-    <div id="product-card">
-        <img alt="{{ item.title }}" src="{{ item.image }}">
-        <h3>{{ item.title[:30] + '...' }}</h3>
-        <p>{{ item.description[:50] + '...' }}</p>
-        <p>Price: ${{ item.price }}</p>
-        <button class="orderbtn" data-toggle="modal" data-target="#Modal-MoreInfo{{ item.id }}">More Info</button>
+    <div id="main-container">
+        {% for item in ordered_items %}
+        {% include 'includes/item_modal.html' %}
+        {% set product = item['product'] %}
+        <div id="product-card">
+            <img alt="{{ product.title }}" src="{{ product.image }}">
+            <h3>{{ product.title[:30] + '...' }}</h3>
+            <p>{{ product.description[:50] + '...' }}</p>
+            <p>Quantity: {{ item['quantity'] }}</p>
+            <p>Price: ${{ product.price }}</p>
+            <button class="orderbtn" data-toggle="modal" data-target="#Modal-MoreInfo{{ product.id }}">More Info</button>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-
-</div>
+{% else %}
+    <h4>You haven't ordered any product yet.</h4>
+{% endif %}
 
 <button class="dashboard-button" style="margin-top: 10px;"><a href="{{ url_for('market') }}">Home</a></button>
 <button class="dashboard-button" data-toggle="modal" data-target="#Modal-DeleteAccount{{ current_user.username }}">Delete my account</button>
 <button class="dashboard-button"><a href="{{ url_for('update_info') }}">Update my Info</a></button>
 <button class="dashboard-button"><a href="{{ url_for('change_password') }}">Change password</a></button>
-
-
-
-
 
 {% endblock %}

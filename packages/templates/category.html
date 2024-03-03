@@ -19,8 +19,11 @@
         <p>{{ item.description[:50] + '...' }}</p>
         <p>Price: ${{ item.price }}</p>
         <button class="orderbtn" data-toggle="modal" data-target="#Modal-MoreInfo{{ item.id }}">More Info</button>
-        <button class="orderbtn" data-toggle="modal" data-target="#Modal-Confirm{{ item.id }}">Purchase Item</button>
-
+        <!-- Form to add item to cart -->
+        <form action="{{ request.path }}" method="POST">
+            <input type="hidden" name="purchased_item" value="{{ item.title }}">
+            <button type="submit" class="orderbtn add-tocart-btn">Add to cart</button>
+        </form>
     </div>
     {% endfor %}
 

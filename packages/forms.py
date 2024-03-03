@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, DateField, SubmitField, EmailField, IntegerField
+from wtforms import StringField, PasswordField, DateField, SubmitField, EmailField, IntegerField, FloatField
 from wtforms.validators import Email,EqualTo,Length,DataRequired,ValidationError, Regexp
 from packages.models import User
 from flask_login import current_user
@@ -91,7 +91,7 @@ class UpdateInfoForm(FlaskForm):
                             )
                         ])
 
-    budget = IntegerField(label="Enter your budget", validators=[DataRequired("Please enter your budget!")])
+    budget = FloatField(label="Enter your budget", validators=[DataRequired("Please enter your budget!")])
 
     def validate_username(self, username_to_check):
         if username_to_check.data != current_user.username:  # Skip validation if username matches current user's username
