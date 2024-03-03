@@ -1,4 +1,4 @@
-from flask import render_template, redirect,url_for,flash, request
+from flask import render_template, redirect,url_for,flash,request
 from packages import app,bcrypt
 from packages import db
 from packages.forms import SignupForm, LoginForm, PurchaseItemForm, UpdateInfoForm, DeleteAccountForm, ChangePasswordForm
@@ -6,7 +6,7 @@ from packages.models import Product, Category, User, Cart, Order, OrderItem
 from flask_login import login_user,login_required,logout_user,current_user
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask import session
-from sqlalchemy import desc
+from sqlalchemy import desc,and_
 from sqlalchemy.orm import joinedload
 
 
@@ -150,6 +150,22 @@ def checkout():
     return redirect(url_for('dashboard'))  # Redirect to orders page or any other desired page
 
 
+@app.route('/cancel_order/<int:product_id>', methods=['POST'])
+@login_required
+def cancel_order(product_id):
+    # Find the ordered item by product_id and current user
+    ordered_item = OrderItem.query.join(Order).filter(and_(OrderItem.product_id == product_id,Order.user_id == current_user.id)).first()
+
+    if ordered_item:
+        # Delete the ordered item
+        db.session.delete(ordered_item)
+        db.session.commit()
+        flash('Order cancelled successfully!', 'success')
+    else:
+        flash('Ordered item not found or you are not authorized to cancel this order.', 'danger')
+
+    return redirect(url_for('dashboard'))
+    
 
 
 # route to display the sign-up page

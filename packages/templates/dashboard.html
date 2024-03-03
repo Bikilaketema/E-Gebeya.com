@@ -32,6 +32,9 @@
             <p>Quantity: {{ item['quantity'] }}</p>
             <p>Price: ${{ product.price }}</p>
             <button class="orderbtn" data-toggle="modal" data-target="#Modal-MoreInfo{{ product.id }}">More Info</button>
+            <form method="POST" action="{{ url_for('cancel_order', product_id=item.product.id) }}">
+                <button type="submit" class="btn btn-danger">Cancel Order</button>
+            </form>
         </div>
         {% endfor %}
     </div>
