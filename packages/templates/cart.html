@@ -11,9 +11,9 @@
 {% block content %}
 
 <div id="cart-container">
-    <h1>Products in your cart!</h1>
 
     {% if products_in_cart %}
+    <h1>Products in your cart!</h1>
         {% for product, quantity in products_in_cart %}
         <div class="product-item">
         <div class="product-details">
@@ -77,7 +77,7 @@
 </div>
 
     {% else %}
-        <p>You don't have any items in your cart.</p>
+        <h1>You don't have any items in your cart.</h1>
     {% endif %}
 </div>
 

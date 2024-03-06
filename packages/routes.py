@@ -154,17 +154,26 @@ def checkout():
 @login_required
 def cancel_order(product_id):
     # Find the ordered item by product_id and current user
-    ordered_item = OrderItem.query.join(Order).filter(and_(OrderItem.product_id == product_id,Order.user_id == current_user.id)).first()
+    ordered_item = OrderItem.query.join(Order).filter(and_(OrderItem.product_id == product_id, Order.user_id == current_user.id)).first()
 
     if ordered_item:
+        # Retrieve the price of the canceled product
+        canceled_product_price = ordered_item.product_price * ordered_item.quantity
+
         # Delete the ordered item
         db.session.delete(ordered_item)
         db.session.commit()
-        flash('Order cancelled successfully!', 'success')
+
+        # Increase the user's budget by the canceled product's price
+        current_user.budget += canceled_product_price
+        db.session.commit()
+
+        flash('Order cancelled successfully! Your money is refunded!.', 'success')
     else:
         flash('Ordered item not found or you are not authorized to cancel this order.', 'danger')
 
     return redirect(url_for('dashboard'))
+
     
 
 

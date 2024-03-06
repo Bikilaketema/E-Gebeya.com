@@ -18,26 +18,52 @@
 <p>Date of Birth: {{ current_user.dob }}</p>
 <p>You have: {{ current_user.prettier_budget }} in your wallet.</p>
 
-<h1 style="margin-bottom: 10px;">Your pending orders!</h1>
 {% if ordered_items %}
+<h1 style="margin-bottom: 10px;">Your pending orders!</h1>
 
-    <div id="main-container">
-        {% for item in ordered_items %}
-        {% include 'includes/item_modal.html' %}
-        {% set product = item['product'] %}
-        <div id="product-card">
-            <img alt="{{ product.title }}" src="{{ product.image }}">
-            <h3>{{ product.title[:30] + '...' }}</h3>
-            <p>{{ product.description[:50] + '...' }}</p>
-            <p>Quantity: {{ item['quantity'] }}</p>
-            <p>Price: ${{ product.price }}</p>
-            <button class="orderbtn" data-toggle="modal" data-target="#Modal-MoreInfo{{ product.id }}">More Info</button>
-            <form method="POST" action="{{ url_for('cancel_order', product_id=item.product.id) }}">
-                <button type="submit" class="btn btn-danger">Cancel Order</button>
-            </form>
-        </div>
-        {% endfor %}
+<div id="main-container">
+    {% for item in ordered_items %}
+    {% include 'includes/item_modal.html' %}
+    {% set product = item['product'] %}
+    <div id="product-card">
+        <img alt="{{ product.title }}" src="{{ product.image }}">
+        <h3>{{ product.title[:30] + '...' }}</h3>
+        <p>{{ product.description[:50] + '...' }}</p>
+        <p>Quantity: {{ item['quantity'] }}</p>
+        <p>Price: ${{ product.price }}</p>
+        <button class="orderbtn" data-toggle="modal" data-target="#Modal-MoreInfo{{ product.id }}">More Info</button>
+        <form method="POST" action="{{ url_for('cancel_order', product_id=item.product.id) }}">
+            <button type="submit" class="btn btn-danger">Cancel Order</button>
+        </form>
     </div>
+
+    <!-- More Info Modals -->
+    <div class="modal fade" id="Modal-MoreInfo{{ product.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">
+                        {{ product.title }}
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body modal-container">
+                    <img alt="{{ product.title }}" src="{{ product.image }}">
+                    <h1>Price: ${{ product.price }}</h1>
+                    <h2>Sub total: ${{ product.price * item.quantity }}</h2>
+                    <h2>Quantity: {{ item.quantity }}</h2>
+                    <!-- Add any other product details here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal-btn" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% else %}
     <h4>You haven't ordered any product yet.</h4>
 {% endif %}
