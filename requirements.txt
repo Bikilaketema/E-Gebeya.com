@@ -9,4 +9,5 @@ WTForms~=3.0.1
 flask-WTF
 flask_bcrypt
 flask_login
+flask_migrate
 email_validator
