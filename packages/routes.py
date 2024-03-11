@@ -9,6 +9,18 @@ from flask import session
 from sqlalchemy import desc,and_
 from sqlalchemy.orm import joinedload
 
+# Define the get_cart_count function
+def get_cart_count():
+    if current_user.is_authenticated:
+        cart_count = Cart.query.filter_by(user_id=current_user.id).count()
+        return cart_count
+    return 0
+
+# Define a context processor to make get_cart_count available in all templates
+@app.context_processor
+def inject_cart_count():
+    cart_count = get_cart_count()
+    return dict(cart_count=cart_count)
 
 # route to display the homepage of the website
 @app.route('/')
@@ -103,6 +115,7 @@ def delete_item_from_cart(item_id):
 
     # Redirect back to the cart page
     return redirect(url_for('cart'))
+
 
 
 @app.route('/checkout', methods=['POST'])

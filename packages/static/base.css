@@ -14,6 +14,19 @@ body {
   margin: 0;
 }
 
+/* CSS to style the badge */
+.badge {
+  position: relative;
+  top: -10px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 5px 8px;
+  font-size: 15px;
+}
+
+
 #navbar {
   max-width: 100%;
   display: flex;

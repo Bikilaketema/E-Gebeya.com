@@ -22,7 +22,11 @@
             {% if current_user.is_authenticated %}
             <button><a href="{{ url_for('market') }}" id="nav-anchor">Market</a></button>
             <button><a href="{{ url_for('products') }}" id="nav-anchor">Categories</a></button>
-            <button><a href="{{ url_for('cart') }}" id="nav-anchor">Cart</a></button>
+            <button><a href="{{ url_for('cart') }}" id="nav-anchor">Cart</a>
+                {% if cart_count > 0 %}
+                <span class="badge badge-danger">{{ cart_count }}</span>
+                {% endif %}
+            </button>
             <button><a href="{{ url_for('logout')}}" id="nav-anchor">Log out</a></button>
             {% else %}
             <button><a href="{{ url_for('index') }}" id="nav-anchor">Home</a></button>
@@ -73,3 +77,13 @@
     
 </footer>
 </html>
+
+<script>
+// JavaScript to update the cart count dynamically
+function updateCartCount(count) {
+  var badge = document.querySelector('.navbar-cart-btn .badge');
+  badge.textContent = count;
+}
+
+// Example usage: updateCartCount(5); // Update the cart count to 5
+</script>
