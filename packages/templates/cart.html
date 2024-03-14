@@ -22,6 +22,17 @@
             <h5>${{ product.price }}</h5>
             <h5>Subtotal Price: ${{ product.price * quantity }}</h5>
         </div>
+
+        <div id="upcart">
+            <form id="upform" action="{{ url_for('update_cart') }}" method="POST">
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <button id="inc" type="submit" name="action" value="decrease">-</button>
+                <input id="finp" type="number" name="quantity" value="{{ quantity }}" min="1">
+                <button id="inc" type="submit" name="action" value="increase">+</button>
+            </form>
+        </div>
+        
+
         <div class="action-buttons">
             <!-- More Info button for each item -->
             <button type="button" class="btn btn-info btn-sm info" data-toggle="modal" data-target="#Modal-MoreInfo{{ product.id }}">
@@ -78,6 +89,7 @@
 
     {% else %}
         <h1>You don't have any items in your cart.</h1>
+        <button class="goto-btn"><a href="{{ url_for('market') }}" style="text-decoration: none; color: white;">Browse the market</a></button>
     {% endif %}
 </div>
 

@@ -99,6 +99,56 @@ def cart():
     
     return render_template('cart.html', products_in_cart=products_in_cart, total_price=total_price, purchase_form=purchase_form)
 
+@app.route('/update_cart', methods=['POST'])
+@login_required
+def update_cart():
+    # Get the product ID from the form
+    product_id = request.form.get('product_id')
+
+    # Check if product_id is provided and valid
+    if not product_id or not product_id.isdigit():
+        flash('Invalid product ID', 'danger')
+        return redirect(url_for('cart'))
+
+    # Convert product_id to integer
+    product_id = int(product_id)
+
+    # Get the action (increase/decrease) from the form
+    action = request.form.get('action')
+
+    # Get the quantity from the form
+    new_quantity = request.form.get('quantity')
+
+    # Check if new_quantity is provided and valid
+    if not new_quantity or not new_quantity.isdigit():
+        flash('Invalid quantity', 'danger')
+        return redirect(url_for('cart'))
+
+    # Convert new_quantity to integer
+    new_quantity = int(new_quantity)
+
+    # Fetch the cart entry for the user and product
+    cart_entry = Cart.query.filter_by(user_id=current_user.id, product_id=product_id).first()
+
+    if cart_entry:
+        # Update the quantity based on the action
+        if action == 'increase':
+            cart_entry.quantity += 1
+        elif action == 'decrease':
+            if cart_entry.quantity > 1:
+                cart_entry.quantity -= 1
+            else:
+                # Remove the item from the cart if the quantity becomes 0
+                db.session.delete(cart_entry)
+    else:
+        flash('Cart entry not found', 'danger')
+        return redirect(url_for('cart'))
+
+    # Commit changes to the database
+    db.session.commit()
+
+    flash('Cart updated successfully!', 'success')
+    return redirect(url_for('cart'))
 
 @app.route('/delete_item_from_cart/<int:item_id>', methods=['POST'])
 @login_required
@@ -109,7 +159,7 @@ def delete_item_from_cart(item_id):
         # Delete the cart entry
         db.session.delete(cart_entry)
         db.session.commit()
-        flash('Item deleted from cart.', 'success')
+        flash('Item deleted from cart.', 'danger')
     else:
         flash('Item not found in cart.', 'danger')
 
@@ -125,7 +175,7 @@ def checkout():
     cart_items = Cart.query.filter_by(user_id=current_user.id).all()
 
     if not cart_items:
-        flash('Your cart is empty.', 'error')
+        flash('Your cart is empty.', 'danger')
         return redirect(url_for('cart'))
 
     # Calculate total price
@@ -133,7 +183,7 @@ def checkout():
 
     # Check if user can afford all items
     if not current_user.can_afford_total(total_price):
-        flash("You don't have enough budget to purchase all items in your cart.", 'error')
+        flash("You don't have enough budget to purchase all items in your cart.", 'danger')
         return redirect(url_for('cart'))
 
     # Create an order
