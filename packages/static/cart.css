@@ -1,9 +1,14 @@
 /* CSS for product item container */
 .product-item {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center; /* Center items horizontally */
-    align-items: center; /* Center items vertically */
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    width: 100%;
+    background-color:#ccc;
 }
 
 /* CSS for product details */
@@ -29,13 +34,14 @@
 
 #upform {
     display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
 #upform input[type="number"] {
     width: 50px;
     padding: 5px;
-    margin: 0 5px;
+    margin: 10px;
 }
 
 #upform button {
@@ -51,21 +57,6 @@
     background-color: #0056b3;
 }
 
-/* Media query for responsiveness on small devices */
-@media (max-width: 768px) {
-    .product-item {
-        flex-direction: column; /* Display items vertically */
-    }
-    
-    .product-details {
-        margin-right: 0; /* Remove margin on small devices */
-    }
-
-    #upform input[type="number"] {
-        width: 40px; /* Adjust width of number input for small devices */
-    }
-}
-
 
 #cart-container {
     display: flex;
@@ -73,18 +64,7 @@
    align-items: center;
    justify-content: center;
    justify-items: center;
-   padding: 20px;
-}
-.product-item {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    width: 50%;
-    background-color:#ccc;
+   padding: 4px;
 }
 
  .product-details {
@@ -137,4 +117,44 @@
     font-size: 16px;
     margin-top: 20px;
     margin-bottom: 10px;
+}
+
+
+/* Media query for responsiveness on medium and large screens */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .product-item {
+        width: 50%; /* Set width to 50% on medium and large screens */
+    }
+    
+    .product-details {
+        margin-right: 0; /* Remove margin on small devices */
+    }
+
+    #upform input[type="number"] {
+        width: 40px; /* Adjust width of number input for small devices */
+    }
+}
+
+/* Media query for small devices */
+@media (max-width: 767px) {
+    .product-item {
+        width: 100%; /* Set width to 100% on small devices */
+    }
+
+    .product-details h3 {
+        flex-grow: 1;
+        font-size: 4vw;
+    }
+
+    .product-details h5 {
+        flex-grow: 1;
+        font-size: 3vw;
+    }
+}
+
+/* Media query for extra large screens */
+@media (min-width: 1200px) {
+    .product-item {
+        width: 50%; /* Set width to 50% on extra large screens */
+    }
 }

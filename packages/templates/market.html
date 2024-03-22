@@ -22,7 +22,7 @@
         <!-- Form to add item to cart -->
         <form action="{{ url_for('market') }}" method="POST">
             <input type="hidden" name="purchased_item" value="{{ item.title }}">
-            <button type="submit" class="orderbtn add-tocart-btn">Add to cart</button>
+            <button type="submit" id="cart-btn">Add to cart</button>
         </form>
     </div>
     {% endfor %}

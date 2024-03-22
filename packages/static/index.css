@@ -64,19 +64,32 @@ body {
     margin: 5%;
   }
 
-  .add-tocart-btn {
-    background-color: #4CAF50;
-    font-size: 1vw;
+  .cancel-btn {
+    background-color: red;
+    font-size: 3vw;
     width: 80%;
     height: 20%;
     min-width: 30px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    flex-grow: 0;
+    flex-grow: 1;
     color: white;
     margin: 5%;
-    height: 50px;
+  }
+
+  form #cart-btn {
+    background-color: #4CAF50;
+    font-size: 3vw;
+    width: 80%;
+    height: 20%;
+    min-width: 30px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    flex-grow: 1;
+    color: white;
+    margin: 5%;
   }
 
 #banner {
@@ -92,10 +105,17 @@ body {
     }
 
     .orderbtn {
-      width: 30%;
+      width: 100px;
+      height: 30px;
       font-size: 1rem;
-      min-width: fit-content;
       
+    }
+
+    form #cart-btn {
+      width: 100px;
+      font-size: 1rem;
+      white-space: nowrap;
+      height: 30px;
     }
 
     #product-card {

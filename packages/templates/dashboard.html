@@ -12,11 +12,11 @@
 {% include 'includes/delete_modal.html' %}
 
 <h1>Welcome to your Dashboard, {{ current_user.username }}!</h1>
-<h3>You have successfully logged in. Now you can buy what you want!</h3>
-<p>Email: {{ current_user.email }}</p>
-<p>Phone Number: {{ current_user.phone }}</p>
-<p>Date of Birth: {{ current_user.dob }}</p>
-<p>You have: {{ current_user.prettier_budget }} in your wallet.</p>
+<h4>You have successfully logged in. Now you can buy what you want!</h4>
+<h4>Email: {{ current_user.email }}</h4>
+<h4>Phone Number: {{ current_user.phone }}</h4>
+<h4>Date of Birth: {{ current_user.dob }}</h4>
+<h4>You have: {{ current_user.prettier_budget }} in your wallet.</h4>
 
 {% if ordered_items %}
 <h1 style="margin-bottom: 10px;">Your pending orders!</h1>
@@ -33,7 +33,7 @@
         <p>Price: ${{ product.price }}</p>
         <button class="orderbtn" data-toggle="modal" data-target="#Modal-MoreInfo{{ product.id }}">More Info</button>
         <form method="POST" action="{{ url_for('cancel_order', product_id=item.product.id) }}">
-            <button type="submit" class="btn btn-danger">Cancel Order</button>
+            <button type="submit" class="cancel-btn">Cancel Order</button>
         </form>
     </div>
 
