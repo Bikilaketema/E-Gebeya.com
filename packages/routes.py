@@ -305,8 +305,6 @@ def dashboard():
         user = User.query.get(user_id)
 
         if user:
-            # Update products owned by the user to set the 'owner' to None
-            Product.query.filter_by(owner=user_id).update({"owner": None})
 
             # Delete the user account from the database
             db.session.delete(user)
