@@ -2,28 +2,31 @@
 
 {% block title %}Market{% endblock %}
 
-{% block css %}
-<link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='index.css') }}" rel="stylesheet">
-{% endblock %}
-
 {% block content %}
-<!-- Your index.html content here -->
-<img id="banner" src="{{ url_for('static', filename='images/banner.jpg') }}">
-<div id="main-container">
+<img src="{{ url_for('static', filename='images/banner.jpg') }}" class="w-full shadow-lg rounded-md">
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 items-center p-4">
     {% for item in products %}
     {% include 'includes/item_modal.html' %}
-    <div id="product-card">
-        <img alt="{{ item.title }}" src="{{ item.image }}">
-        <h3>{{ item.title[:30] + '...' }}</h3>
-        <p>{{ item.description[:50] + '...' }}</p>
-        <p>Price: ${{ item.price }}</p>
-        <button class="orderbtn" data-toggle="modal" data-target="#Modal-MoreInfo{{ item.id }}">More Info</button>
-        <!-- Form to add item to cart -->
-        <form action="{{ url_for('market') }}" method="POST">
-            <input type="hidden" name="purchased_item" value="{{ item.title }}">
-            <button type="submit" id="cart-btn">Add to cart</button>
-        </form>
+    <div class="flex flex-col bg-gray-200 p-4 rounded-md justify-center items-center h-100 gap-4">
+        <img alt="{{ item.title }}" src="{{ item.image }}"
+            class="rounded-md object-contain max-w-full max-h-52 min-h-52">
+        <div class="min-h-36 max-h-36 flex justify-center items-center flex-col">
+            <h3 class="text-xl lg:text-2xl text-center">{{ item.title[:30] + '...' }}</h3>
+            <p class="text-xl text-center">{{ item.description[:50] + '...' }}</p>
+            <p class="text-xl text-center">Price: ${{ item.price }}</p>
+        </div>
+
+        <div class="w-full gap-4 flex flex-col justify-center items-center">
+            <button class="bg-green-600 p-2 text-xl text-white rounded-md hover:bg-green-800 text-nowrap w-[75%]"
+                data-toggle="modal" data-target="#Modal-MoreInfo{{ item.id }}">More Info</button>
+            <!-- Form to add item to cart -->
+            <form action="{{ url_for('market') }}" method="POST" class="w-full flex justify-center items-center">
+                <input type="hidden" name="purchased_item" value="{{ item.title }}">
+                <button type="submit"
+                    class="bg-green-600 p-2 text-xl text-white rounded-md hover:bg-green-800 text-nowrap w-[75%]">Add to
+                    cart</button>
+            </form>
+        </div>
     </div>
     {% endfor %}
 </div>

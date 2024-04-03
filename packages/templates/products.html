@@ -1,24 +1,23 @@
 {% extends 'base.html' %}
 
 {% block title %}Category{% endblock %}
-{% block css %}
-<link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='products.css') }}" rel="stylesheet">
-{% endblock %}
 
 {% block content %}
-<h1>Categories</h1>
-<div id="categories-grid">
-    {% for category_info in categories %}
-    <div id="category-card">
-        <img alt="{{ category_info.name }}" class="category-icons" src="{{ category_info.image }}">
 
-        <div id="category-name">
-            <h3>{{ category_info.name }}</h3>
-            <a href="/category/{{ category_info.name }}" id="view-product-button">View Products</a>
+<div class="gap-4 p-4">
+<h1 class="text-4xl text-center font-bold m-4">Categories</h1>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    {% for category_info in categories %}
+    <div class="bg-gray-200 flex p-4 gap-4 rounded-md items-center">
+        <img alt="{{ category_info.name }}" class="w-14 h-14 lg:w-20 lg:h-20" src="{{ category_info.image }}">
+
+        <div class="gap-4 flex flex-col justify-start items-center w-full">
+            <h3 class="text-xl lg:text-3xl text-center">{{ category_info.name }}</h3>
+            <a href="/category/{{ category_info.name }}" class="bg-green-600 p-2 lg:text-xl text-lg text-white rounded-md hover:bg-green-800 text-nowrap w-[100%] text-center hover:no-underline">View Products</a>
         </div>
 
     </div>
     {% endfor %}
+</div>
 </div>
 {% endblock %}
