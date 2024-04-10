@@ -99,8 +99,8 @@
     </div>
 
     {% else %}
-    <h1>You don't have any items in your cart.</h1>
-    <button class="goto-btn"><a href="{{ url_for('market') }}" style="text-decoration: none; color: white;">Browse the
+    <h1 class="text-3xl text-center m-8">You don't have any items in your cart.</h1>
+    <button class="bg-green-600 p-2 text-2xl text-white rounded-md hover:bg-green-800 text-nowrap"><a href="{{ url_for('market') }}" style="text-decoration: none; color: white;">Browse the
             market</a></button>
     {% endif %}
 </div>

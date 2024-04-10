@@ -210,7 +210,7 @@ def checkout():
     db.session.commit()
 
     flash('Your order has been placed successfully!', 'success')
-    return redirect(url_for('dashboard'))  # Redirect to orders page or any other desired page
+    return redirect(url_for('dashboard')) 
 
 
 @app.route('/cancel_order/<int:product_id>', methods=['POST'])
@@ -278,7 +278,7 @@ def login():
                 flash(f'Successfully logged in as {attempted_user.username}!', category='success')
                 return redirect(url_for('dashboard'))
             else:
-                flash('Username or password is wrong! Please try again.', category='danger')
+                flash('Password is wrong! Please try again.', category='danger')
         else:
             flash('Account with this username does not exist. Please sign up.', category='danger')
             return redirect(url_for('signup'))
@@ -398,12 +398,12 @@ def change_password():
             flash('New password must be different from the old password.', 'danger')
 
         elif not bcrypt.check_password_hash(current_user.password_hash, form.old_password.data):
-            flash('Incorrect old password. Please try again.', 'danger')
+            flash('Incorrect old password. Please insert a correct password!.', 'danger')
         else:
             # Update the user's password with the new password
             current_user.password_hash = bcrypt.generate_password_hash(form.new_password.data).decode('utf-8')
             db.session.commit()
-            flash('Password updated successfully!', 'success')
+            flash('Password changed successfully!', 'success')
             return redirect(url_for('dashboard'))
 
     return render_template('change_password.html', form=form)

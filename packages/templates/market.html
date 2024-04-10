@@ -11,7 +11,7 @@
         <img alt="{{ item.title }}" src="{{ item.image }}"
             class="rounded-md object-contain max-w-full max-h-52 min-h-52">
         <div class="min-h-36 max-h-36 flex justify-center items-center flex-col">
-            <h3 class="text-xl lg:text-2xl text-center">{{ item.title[:30] + '...' }}</h3>
+            <h3 class="text-xl lg:text-2xl text-center font-bold">{{ item.title[:30] + '...' }}</h3>
             <p class="text-xl text-center">{{ item.description[:50] + '...' }}</p>
             <p class="text-xl text-center">Price: ${{ item.price }}</p>
         </div>

@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>e-GEBEYA - {% block title %}{% endblock %}</title>
     <link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="icon" href="{{ url_for('static', filename='/images/eGEBEYA.png') }}">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     {% block css %}
@@ -16,69 +19,93 @@
 </head>
 
 <header class="bg-orange-500 w-full p-2">
-        <div class="flex gap-2 w-full justify-evenly items-center">
-            <img alt="eGEBEYA Logo" src="{{ url_for('static', filename='images/eGEBEYA.png') }}" class="w-20 shadow-lg">
-            {% if current_user.is_authenticated %}
-            <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a href="{{ url_for('market') }}" class="hover:no-underline text-nowrap hover:text-white p-2">Market</a></button>
-            <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a href="{{ url_for('products') }}" class="hover:no-underline text-nowrap hover:text-white p-2">Categories</a></button>
-            <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16 flex justify-center items-center"><a href="{{ url_for('cart') }}" class="hover:no-underline text-nowrap hover:text-white p-2">Cart</a>
-                {% if cart_count > 0 %}
-                <span class="bg-red-500 rounded-full badge w-10 h-10">{{ cart_count }}</span>
-                {% endif %}
-            </button>
-            <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a href="{{ url_for('logout')}}" class="hover:no-underline text-nowrap hover:text-white p-2">Log out</a></button>
-            {% else %}
-            <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a href="{{ url_for('index') }}" class="hover:no-underline text-nowrap hover:text-white p-2">Home</a></button>
-            <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a href="{{ url_for('login') }}" class="hover:no-underline text-nowrap hover:text-white p-2">Log in</a></button>
-            <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a href="{{ url_for('signup') }}" class="hover:no-underline text-nowrap hover:text-white p-2">Sign up</a></button>
-            <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a href="{{ url_for('about') }}" class="hover:no-underline text-nowrap hover:text-white p-2">About</a></button>
+    <div class="flex gap-2 w-full justify-evenly items-center">
+        <img alt="eGEBEYA Logo" src="{{ url_for('static', filename='images/eGEBEYA.png') }}" class="w-20 shadow-lg">
+        {% if current_user.is_authenticated %}
+        <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a
+                href="{{ url_for('market') }}"
+                class="hover:no-underline text-nowrap hover:text-white p-2">Market</a></button>
+        <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a
+                href="{{ url_for('products') }}"
+                class="hover:no-underline text-nowrap hover:text-white p-2">Categories</a></button>
+        <button
+            class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16 flex justify-center items-center"><a
+                href="{{ url_for('cart') }}" class="hover:no-underline text-nowrap hover:text-white p-2">Cart</a>
+            {% if cart_count > 0 %}
+            <span class="bg-red-500 rounded-full badge w-10 h-10">{{ cart_count }}</span>
             {% endif %}
+        </button>
+        <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a
+                href="{{ url_for('logout')}}" class="hover:no-underline text-nowrap hover:text-white p-2">Log
+                out</a></button>
+        {% else %}
+        <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a
+                href="{{ url_for('index') }}"
+                class="hover:no-underline text-nowrap hover:text-white p-2">Home</a></button>
+        <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a
+                href="{{ url_for('login') }}" class="hover:no-underline text-nowrap hover:text-white p-2">Log
+                in</a></button>
+        <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a
+                href="{{ url_for('signup') }}" class="hover:no-underline text-nowrap hover:text-white p-2">Sign
+                up</a></button>
+        <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a
+                href="{{ url_for('about') }}"
+                class="hover:no-underline text-nowrap hover:text-white p-2">About</a></button>
+        {% endif %}
 
-            {% if current_user.is_authenticated %}
-            <a href="{{ url_for('dashboard') }}" ><img class="w-20 hover:bg-white hover:rounded-full" id="profile-icon" src="{{ url_for('static', filename='icons/profile-user.png') }}"></a>
-            {% endif %}
-        
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard') }}"><img class="w-20 hover:bg-white hover:rounded-full" id="profile-icon"
+                src="{{ url_for('static', filename='icons/profile-user.png') }}"></a>
+        {% endif %}
+
     </div>
 
 </header>
 
 
 <body class="mb-20">
-<div >
-    {% with messages = get_flashed_messages(with_categories=true) %}
-       {% if messages %}
-          {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">
-                <button type="button" class="m1-2 mb-1 close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                    {{ message }}
-            </div>
-          {% endfor %}
-       {% endif %}
-    {% endwith %}
+    <div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            <button type="button" class="m1-2 mb-1 close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
 
-    {% block content %}
+        {% block content %}
 
-    {% endblock %}
-</div>
+        {% endblock %}
+    </div>
 
-<script src='https://kit.fontawesome.com/a076d05399.js'></script>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
 </body>
 
 <footer class="fixed bottom-0 left-0 bg-orange-500 text-center w-full">
-        <p class="text-2xl p-4 font-bold">&copy; E-GEBEYA. All rights reserved.</p>
+    <p class="text-2xl p-4 font-bold">&copy; E-GEBEYA. All rights reserved.</p>
 </footer>
+
 </html>
 
 <script>
-// JavaScript to update the cart count dynamically
-function updateCartCount(count) {
-  var badge = document.querySelector('.navbar-cart-btn .badge');
-  badge.textContent = count;
-}
+    // JavaScript to update the cart count dynamically
+    function updateCartCount(count) {
+        var badge = document.querySelector('.navbar-cart-btn .badge');
+        badge.textContent = count;
+    }
 
 </script>

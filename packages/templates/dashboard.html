@@ -2,43 +2,44 @@
 
 {% block title %}{{ current_user.username }}'s Dashboard{% endblock %}
 
-{% block css %}
-<link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='signup.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='index.css') }}" rel="stylesheet">
-{% endblock %}
-
 {% block content %}
 {% include 'includes/delete_modal.html' %}
 
-<h1>Welcome to your Dashboard, {{ current_user.username }}!</h1>
-<h4>You have successfully logged in. Now you can buy what you want!</h4>
-<h4>Email: {{ current_user.email }}</h4>
-<h4>Phone Number: {{ current_user.phone }}</h4>
-<h4>Date of Birth: {{ current_user.dob }}</h4>
-<h4>You have: {{ current_user.prettier_budget }} in your wallet.</h4>
+<h1 class="text-4xl text-center">Welcome to your Dashboard, {{ current_user.username }}!</h1>
+<h4 class="text-center text-green-500 text-xl">You have successfully logged in. Now you can buy what you want!</h4>
+<h4 class="text-center text-xl">Email: {{ current_user.email }}</h4>
+<h4 class="text-center text-xl">Phone Number: {{ current_user.phone }}</h4>
+<h4 class="text-center text-xl">Date of Birth: {{ current_user.dob }}</h4>
+<h4 class="text-center text-xl">You have: {{ current_user.prettier_budget }} in your wallet.</h4>
 
 {% if ordered_items %}
-<h1 style="margin-bottom: 10px;">Your pending orders!</h1>
-
-<div id="main-container">
+<h1 class="text-3xl text-center mt-8 mb-4">Your pending orders!</h1>
+<div class="grid grid grid-cols-2 lg:grid-cols-4 px-8 gap-4 align-self-center">
     {% for item in ordered_items %}
     {% include 'includes/item_modal.html' %}
     {% set product = item['product'] %}
-    <div id="product-card">
-        <img alt="{{ product.title }}" src="{{ product.image }}">
-        <h3>{{ product.title[:30] + '...' }}</h3>
-        <p>{{ product.description[:50] + '...' }}</p>
-        <p>Quantity: {{ item['quantity'] }}</p>
-        <p>Price: ${{ product.price }}</p>
-        <button class="orderbtn" data-toggle="modal" data-target="#Modal-MoreInfo{{ product.id }}">More Info</button>
-        <form method="POST" action="{{ url_for('cancel_order', product_id=item.product.id) }}">
-            <button type="submit" class="cancel-btn">Cancel Order</button>
+    <div class="flex flex-col bg-gray-200 p-4 rounded-md justify-center items-center h-100 gap-4">
+        <img alt="{{ product.title }}" src="{{ product.image }}"
+            class="rounded-md object-contain max-w-full max-h-52 min-h-52">
+
+        <div class="min-h-40 max-h-40 mt-2 mb-2 flex justify-center items-center flex-col">
+            <h3 class="text-xl lg:text-2xl text-center font-bold">{{ product.title[:30] + '...' }}</h3>
+            <p class="text-xl text-center">{{ product.description[:50] + '...' }}</p>
+            <p class="text-xl text-center">Quantity: {{ item['quantity'] }}</p>
+            <p class="text-xl text-center">Price: ${{ product.price }}</p>
+        </div>
+
+        <div class="w-full gap-4 flex flex-col justify-center items-center">
+        <button class="bg-green-600 p-2 text-xl text-white rounded-md hover:bg-green-800 text-nowrap w-[75%]" data-toggle="modal" data-target="#Modal-MoreInfo{{ product.id }}">More Info</button>
+        <form method="POST" action="{{ url_for('cancel_order', product_id=item.product.id) }}" class="w-full flex justify-center items-center">
+            <button type="submit"  class="bg-red-600 p-2 text-xl text-white rounded-md hover:bg-red-800 text-nowrap w-[75%]">Cancel Order</button>
         </form>
+        </div>
     </div>
 
     <!-- More Info Modals -->
-    <div class="modal fade" id="Modal-MoreInfo{{ product.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="Modal-MoreInfo{{ product.id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -65,12 +66,15 @@
     {% endfor %}
 </div>
 {% else %}
-    <h4>You haven't ordered any product yet.</h4>
+<h4>You haven't ordered any product yet.</h4>
 {% endif %}
-
-<button class="dashboard-button" style="margin-top: 10px;"><a href="{{ url_for('market') }}">Home</a></button>
-<button class="dashboard-button" data-toggle="modal" data-target="#Modal-DeleteAccount{{ current_user.username }}">Delete my account</button>
-<button class="dashboard-button"><a href="{{ url_for('update_info') }}">Update my Info</a></button>
-<button class="dashboard-button"><a href="{{ url_for('change_password') }}">Change password</a></button>
-
+<div class="w-full flex justify-center items-center">
+<div class="flex justify-between p-4 w-[70%] max-sm:w-[90%] bg-gray-200 m-4 rounded-md max-sm:grid max-sm:grid-cols-2 grid-cols-4 gap-4">
+<button class="bg-green-600 p-2 text-xl text-white rounded-md hover:bg-green-800 text-nowrap w-full"><a href="{{ url_for('market') }}" class="hover:text-white hover:no-underline">Home</a></button>
+<button class="bg-green-600 p-2 text-xl text-white rounded-md hover:bg-green-800 text-nowrap w-full" data-toggle="modal"
+    data-target="#Modal-DeleteAccount{{ current_user.username }}">Delete my account</button>
+<button class="bg-green-600 p-2 text-xl text-white rounded-md hover:bg-green-800 text-nowrap w-full"><a href="{{ url_for('update_info') }}" class="hover:text-white hover:no-underline">Update my Info</a></button>
+<button class="bg-green-600 p-2 text-xl text-white rounded-md hover:bg-green-800 text-nowrap w-full"><a href="{{ url_for('change_password') }}" class="hover:text-white hover:no-underline">Change password</a></button>
+</div>
+</div>
 {% endblock %}
