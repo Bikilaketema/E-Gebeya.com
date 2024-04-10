@@ -9,9 +9,11 @@
 
 {% block content %}
 
-<div id="login-container">
-    <h1>Log in</h1>
-    <form method="POST" class="form-register">
+<div class="w-full lg:h-screen flex justify-center items-center">
+
+<div class="flex flex-col w-[60%] max-sm:w-full max-sm:m-4 gap-4 items-center justify-center bg-gray-200 p-4 rounded-md">
+    <h1 class="text-4xl text-center mb-8 font-bold">Log in</h1>
+    <form method="POST" class="w-[60%] gap-4">
         {{ form.hidden_tag() }}
 
         {{ form.username.label(class="login-label") }}
@@ -21,15 +23,19 @@
         {{ form.password(class="form-control",placeholder="Enter your password") }}
 
         <br>
-        {{ form.submit(class="login-btn") }}
+        {{ form.submit(class="bg-green-600 p-2 text-xl text-white rounded-md hover:bg-green-800 text-nowrap w-[25%]") }}
 
     </form>
 
-    <div class="checkbox mb-3">
+    <div class="flex flex-col items-center justify-center gap-4">
         <h6>Do not have an account?</h6>
         <a class="btn btn-sm btn-secondary" href="{{ url_for('signup') }}">Sign up</a>
 
     </div>
 
 </div>
+
+</div>
+
+
 {% endblock %}
