@@ -32,7 +32,7 @@
             class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16 flex justify-center items-center"><a
                 href="{{ url_for('cart') }}" class="hover:no-underline text-nowrap hover:text-white p-2">Cart</a>
             {% if cart_count > 0 %}
-            <span class="bg-red-500 rounded-full badge w-10 h-10">{{ cart_count }}</span>
+            <span class="bg-red-500 rounded-full badge w-10 h-10 flex items-center justify-center">{{ cart_count }}</span>
             {% endif %}
         </button>
         <button class="bg-green-600 text-white hover:bg-green-800 rounded-md text-xl lg:w-40 h-16"><a
