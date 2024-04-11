@@ -1,11 +1,6 @@
 {% extends 'base.html' %}
 
 {% block title %}Update Your Information{% endblock %}
-{% block css %}
-<link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='signup.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='modal.css') }}" rel="stylesheet">
-{% endblock %}
 
 {% block content %}
 <div class="w-full p-8 flex justify-center items-center">
@@ -15,7 +10,7 @@
         <form method="POST" class="w-[60%] max-sm:w-[80%] gap-4 flex flex-col items-center justify-center">
             {{ update_info.hidden_tag() }}
 
-            {{ update_info.username.label() }}
+            {{ update_info.username.label(class="text-xl font-bold") }}
             {{ update_info.username(class="w-full p-2 rounded-md",placeholder="Enter your new Username") }}
             <br>
             {{ update_info.email.label(class="text-xl font-bold") }}
