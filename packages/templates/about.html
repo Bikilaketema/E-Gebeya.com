@@ -1,18 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}About{% endblock %}
 
-{% block css %}
-<link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='about.css') }}" rel="stylesheet">
-
-{% endblock %}
-
 {% block content %}
 
-<div id="about-container">
+<div class="p-8">
 
-    <h1>About Us</h1>
-    <p>"Welcome to eGEBEYA, the leading online marketplace that seamlessly
+    <h1 class="text-4xl text-center font-bold mb-8">About Us</h1>
+    <p class="text-xl text-justify">"Welcome to eGEBEYA, the leading online marketplace that seamlessly
         connects buyers and sellers from around the world. At eGEBEYA, we
         are dedicated to providing a robust platform that offers a user-friendly
         experience for individuals and businesses alike.
