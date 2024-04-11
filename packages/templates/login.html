@@ -2,25 +2,20 @@
 
 {% block title %}Log in{% endblock %}
 
-{% block css %}
-<link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='login.css') }}" rel="stylesheet">
-{% endblock %}
-
 {% block content %}
 
-<div class="w-full lg:h-screen flex justify-center items-center">
+<div class="w-full flex justify-center items-center">
 
-<div class="flex flex-col w-[60%] max-sm:w-full max-sm:m-4 gap-4 items-center justify-center bg-gray-200 p-4 rounded-md">
+<div class="flex flex-col max-sm:h-screen mt-11 w-[60%] max-sm:w-full max-sm:m-4 gap-4 items-center justify-center bg-gray-200 p-4 rounded-md">
     <h1 class="text-4xl text-center mb-8 font-bold">Log in</h1>
-    <form method="POST" class="w-[60%] gap-4">
+    <form method="POST" class="w-[60%] gap-4 flex flex-col items-center justify-center">
         {{ form.hidden_tag() }}
 
-        {{ form.username.label(class="login-label") }}
-        {{ form.username(class="form-control",placeholder="Username") }}
+        {{ form.username.label(class="text-xl font-bold") }}
+        {{ form.username(class="w-full p-2 rounded-md",placeholder="Username") }}
 
-        {{ form.password.label(class="login-label") }}
-        {{ form.password(class="form-control",placeholder="Enter your password") }}
+        {{ form.password.label(class="text-xl font-bold") }}
+        {{ form.password(class="w-full p-2 rounded-md",placeholder="Enter your password") }}
 
         <br>
         {{ form.submit(class="bg-green-600 p-2 text-xl text-white rounded-md hover:bg-green-800 text-nowrap w-[25%]") }}

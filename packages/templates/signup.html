@@ -1,52 +1,52 @@
 {% extends 'base.html' %}
 
 {% block title %}Signup{% endblock %}
-{% block css %}
-<link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='signup.css') }}" rel="stylesheet">
-{% endblock %}
 
 {% block content %}
-<div id="signup-container">
-    <h1>Sign Up</h1>
+<div class="w-full p-8 flex justify-center items-center">
+
+    <div class="flex flex-col w-[60%] max-sm:w-full max-sm:m-4 gap-4 items-center justify-center bg-gray-200 p-4 rounded-md">
+    <h1 class="text-4xl text-center mb-8 font-bold">Sign Up</h1>
 
     {% if error %}
     <p style="color: red;">{{ error }}</p>
     {% endif %}
-    <form method="POST" class="form-register">
+    <form method="POST" class="w-[60%] max-sm:w-[80%] gap-4 flex flex-col items-center justify-center">
 
         {{ form.hidden_tag() }}
 
-        {{ form.username.label(class="signup-label") }}
-        {{ form.username(class="form-control",placeholder="Username") }}
+        {{ form.username.label(class="text-xl font-bold") }}
+        {{ form.username(class="w-full p-2 rounded-md",placeholder="Username") }}
 
-        {{ form.email.label(class="signup-label") }}
-        {{ form.email(class="form-control",placeholder="Email") }}
+        {{ form.email.label(class="text-xl font-bold") }}
+        {{ form.email(class="w-full p-2 rounded-md",placeholder="Email") }}
 
-        {{ form.phone.label(class="signup-label") }}
-        {{ form.phone(class="form-control",placeholder="Phone number - without 0") }}
+        {{ form.phone.label(class="text-xl font-bold") }}
+        {{ form.phone(class="w-full p-2 rounded-md",placeholder="Phone number - without 0") }}
 
-        {{ form.dob.label(class="signup-label") }}
-        {{ form.dob(class="form-control",placeholder="Date of birth") }}
+        {{ form.dob.label(class="text-xl font-bold") }}
+        {{ form.dob(class="w-full p-2 rounded-md",placeholder="Date of birth") }}
 
-        {{ form.budget.label(class="signup-label") }}
-        {{ form.budget(class="form-control",placeholder="Enter your budget in ETB") }}
+        {{ form.budget.label(class="text-xl font-bold") }}
+        {{ form.budget(class="w-full p-2 rounded-md",placeholder="Enter your budget in ETB") }}
 
-        {{ form.password1.label(class="signup-label") }}
-        {{ form.password1(class="form-control",placeholder="Enter a password") }}
+        {{ form.password1.label(class="text-xl font-bold") }}
+        {{ form.password1(class="w-full p-2 rounded-md",placeholder="Enter a password") }}
 
-        {{ form.password2.label(class="signup-label") }}
-        {{ form.password2(class="form-control",placeholder="Confirm the password") }}
+        {{ form.password2.label(class="text-xl font-bold") }}
+        {{ form.password2(class="w-full p-2 rounded-md",placeholder="Confirm the password") }}
 
         <br>
-        {{ form.submit(class="signup-btn") }}
+        {{ form.submit(class="bg-green-600 p-2 text-xl text-white rounded-md hover:bg-green-800 text-nowrap w-[50%]") }}
     </form>
 
-    <div class="checkbox mb-3">
+    <div class="flex flex-col items-center justify-center gap-4">
         <h6>Already have an account?</h6>
         <a class="btn btn-sm btn-secondary" href="{{ url_for('login') }}">Log in</a>
 
     </div>
+
+</div>
 
 </div>
 {% endblock %}
