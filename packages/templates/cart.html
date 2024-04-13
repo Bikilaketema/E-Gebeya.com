@@ -2,10 +2,6 @@
 
 {% block title %}Cart{% endblock %}
 
-{% block css %}
-<link href="{{ url_for('static', filename='modal.css') }}" rel="stylesheet">
-{% endblock %}
-
 {% block content %}
 
 <div class="flex flex-col items-center justify-center gap-4 w-full">
@@ -67,31 +63,47 @@
     <div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <div class="modal-content">
+            <div class="modal-content flex flex-col items-center justify-center">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="checkoutModalLabel">Checkout</h5>
+                    <h5 class="text-2xl font-bold text-center" id="checkoutModalLabel">Checkout</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body max-sm:h-screen">
                     <!-- List of items in the cart -->
                     <ul class="list-group">
-                        {% for product, quantity in products_in_cart %}
-                        <li class="list-group-item">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span>{{ product.title }}</span>
-                                <span>Quantity: {{ quantity }}</span>
-                                <span>Total Price: ${{ product.price * quantity }}</span>
-                            </div>
-                        </li>
-                        {% endfor %}
+                        <table class="table table-fixed">
+                            <thead class="text-2xl font-bold bg-gray-200">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Quantity</th>
+                                    <th>Sub-total Price</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-xl bg-gray-100">
+                                {% for product, quantity in products_in_cart %}
+                                <tr>
+                                    <td>
+                                        <span>{{ product.title }}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{ quantity }}</span>
+                                    </td>
+                                    <td>
+                                        <span>${{ product.price * quantity }}</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
                     </ul>
-                    <p class="mt-3">Total Price: ${{ total_price }}</p>
+                    <p class="mt-3 text-xl font-bold text-center">Total Price: ${{ total_price }}</p>
                     <!-- Add your checkout form here -->
-                    <form method="POST" action="/checkout">
+                    <form method="POST" action="/checkout" class="flex items-center justify-center mt-8">
                         <!-- Include any necessary form fields -->
-                        <button type="submit" class="btn btn-success">Confirm Checkout</button>
+                        <button type="submit" class="bg-green-600 p-2 text-xl text-white rounded-md hover:bg-green-800 text-nowrap ">Confirm Checkout</button>
                     </form>
                 </div>
             </div>
@@ -100,7 +112,8 @@
 
     {% else %}
     <h1 class="text-3xl text-center m-8">You don't have any items in your cart.</h1>
-    <button class="bg-green-600 p-2 text-2xl text-white rounded-md hover:bg-green-800 text-nowrap"><a href="{{ url_for('market') }}" style="text-decoration: none; color: white;">Browse the
+    <button class="bg-green-600 p-2 text-2xl text-white rounded-md hover:bg-green-800 text-nowrap"><a
+            href="{{ url_for('market') }}" style="text-decoration: none; color: white;">Browse the
             market</a></button>
     {% endif %}
 </div>
@@ -111,24 +124,24 @@
 <div class="modal fade" id="Modal-MoreInfo{{ product.id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content max-h-screen max-sm:h-screen flex flex-col items-center justify-center gap-2">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">
+                <h5 class="text-2xl font-bold text-center" id="ModalLabel">
                     {{ product.title }}
                 </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body modal-container">
-                <img alt="{{ product.title }}" src="{{ product.image }}">
-                <h1>Price: ${{ product.price }}</h1>
-                <h2>Sub total: ${{ product.price * quantity }}</h2>
-                <h3>Quantity: {{ quantity }}</h3>
+                <img alt="{{ product.title }}" src="{{ product.image }}"
+                    class="h-[400px] border border-green-600 border-8 rounded-md">
+                <h1 class="text-lg font-bold text-center">Price: ${{ product.price }}</h1>
+                <h2 class="text-lg font-bold text-center">Sub total: ${{ product.price * quantity }}</h2>
+                <h3 class="text-lg font-bold text-center">Quantity: {{ quantity }}</h3>
                 <!-- Add any other product details here -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="modal-btn" data-dismiss="modal">Close</button>
+                <button type="button"
+                    class="bg-green-600 p-2 text-xl text-white rounded-md hover:bg-green-800 text-nowrap"
+                    data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

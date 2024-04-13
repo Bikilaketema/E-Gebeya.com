@@ -39,34 +39,31 @@
 
     <!-- More Info Modals -->
     <div class="modal fade" id="Modal-MoreInfo{{ product.id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="ModalLabel">
-                        {{ product.title }}
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body modal-container">
-                    <img alt="{{ product.title }}" src="{{ product.image }}">
-                    <h1>Price: ${{ product.price }}</h1>
-                    <h2>Sub total: ${{ product.price * item.quantity }}</h2>
-                    <h2>Quantity: {{ item.quantity }}</h2>
-                    <!-- Add any other product details here -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="modal-btn" data-dismiss="modal">Close</button>
-                </div>
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content max-h-screen max-sm:h-screen flex flex-col items-center justify-center gap-2">
+            <div class="modal-header">
+                <h5 class="text-2xl font-bold text-center" id="ModalLabel">
+                    {{ product.title }}
+                </h5>
+            </div>
+            <div class="modal-body modal-container">
+                <img alt="{{ product.title }}" src="{{ product.image }}" class="h-[400px] border border-green-600 border-8 rounded-md">
+                <h1 class="text-lg font-bold text-center">Price: ${{ product.price }}</h1>
+                <h2 class="text-lg font-bold text-center">Sub total: ${{ product.price * item.quantity }}</h2>
+                <h3 class="text-lg font-bold text-center">Quantity: {{ item.quantity }}</h3>
+                <!-- Add any other product details here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="bg-green-600 p-2 text-xl text-white rounded-md hover:bg-green-800 text-nowrap" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
     {% endfor %}
 </div>
 {% else %}
-<h4>You haven't ordered any product yet.</h4>
+<h4 class="text-2xl font-bold text-center mt-8">You haven't ordered any product yet.</h4>
 {% endif %}
 <div class="w-full flex justify-center items-center">
 <div class="flex justify-between p-4 w-[70%] max-sm:w-[90%] bg-gray-200 m-4 rounded-md max-sm:grid max-sm:grid-cols-2 grid-cols-4 gap-4">

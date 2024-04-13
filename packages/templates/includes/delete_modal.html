@@ -1,35 +1,33 @@
-<link href="{{ url_for('static', filename='modal.css') }}" rel="stylesheet">
-
-<div class="modal fade" id="Modal-DeleteAccount{{ current_user.username }}"
-     tabindex="-1"
-     aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="Modal-DeleteAccount{{ current_user.username }}" tabindex="-1"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content flex flex-col items-center justify-center">
       <div class="modal-header">
-        <h2 class="modal-title" id="ModalLabel">
+        <h2 class="text-2xl font-bold" id="ModalLabel">
           {{ current_user.username }}
         </h2>
-        <button type="button" class="close"
-                data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true"></span>
         </button>
       </div>
-      <div class="modal-body modal-container">
-            <form method="POST" class="form-register">
-                {{ delete_form.hidden_tag() }}
+      <div class="modal-body w-full">
+        <form method="POST" class="flex flex-col items-center justify-center w-[100%]">
+          {{ delete_form.hidden_tag() }}
 
-                <h5>Are you sure you want to delete your account?</h5>
-            <p>You will loose all the data in your account. This process can not be reversed, your data is going 
-                to be completely deleted from our database when you click the confirmation button.</p>
-            
-                {{ delete_form.delete(class="modal-btn") }}
-            </form>
-      </div>
+          <h5 class="text-xl font-bold text-center text-red-600">Are you sure you want to delete your account?</h5>
+          <p class="text-lg text-justify mt-4">You will loose all the data in your account. This process can not be
+            reversed, your data is going
+            to be completely deleted from our database when you click the confirmation button.</p>
 
-      <div class="modal-footer">
-        <button type="button" class="modal-btn"
-                data-dismiss="modal">Cancel
-        </button>
+          {{ delete_form.delete(class="bg-red-600 p-2 text-xl text-white rounded-md hover:bg-red-800 text-nowrap m-4
+          w-[75%]") }}
+
+          <button type="button"
+            class="bg-green-600 p-2 text-xl text-white rounded-md hover:bg-green-800 text-nowrap m-4 w-[75%]"
+            data-dismiss="modal">Cancel
+          </button>
+        </form>
+
 
       </div>
     </div>
