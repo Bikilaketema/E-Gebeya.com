@@ -12,3 +12,4 @@ flask_login
 flask_migrate
 email_validator
 python-dotenv==1.0.0
+chapa
