@@ -77,17 +77,9 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(length=20), nullable=False, unique=True)
     email = db.Column(db.String(length=20), nullable=False, unique=True)
     phone = db.Column(db.String(), nullable=False, unique=True)
-    budget = db.Column(db.Integer(), nullable=False, default=1000)
     dob = db.Column(db.Date())
     password_hash = db.Column(db.String(length=20), nullable=False)
    # product = db.relationship('Product',backref='owned_user',lazy=True)
-
-    @property
-    def prettier_budget(self):
-        formatted_budget = "{:,.2f}".format(self.budget)
-        return f'$ {formatted_budget}'
-
-
 
     @property
     def password(self):
@@ -99,9 +91,3 @@ class User(db.Model, UserMixin):
 
     def check_password_correction(self, attempted_password):
         return bcrypt.check_password_hash(self.password_hash, attempted_password)
-    
-    def can_purchase(self, product_obj):
-        return self.budget >= product_obj.price
-    
-    def can_afford_total(self, total_price):
-        return self.budget >= total_price

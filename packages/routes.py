@@ -38,12 +38,9 @@ def market():
         purchased_item = request.form.get('purchased_item')
         p_item_object = Product.query.filter_by(title=purchased_item).first()
         if p_item_object:
-            if current_user.can_purchase(p_item_object):
-                # Add the item to the cart
-                Cart.add_to_cart(user_id=current_user.id, product_id=p_item_object.id, quantity=1)
-                flash(f"{p_item_object.title} added to your cart.", category='success')
-            else:
-                flash(f"Unfortunately you don't have enough money to purchase {p_item_object.title}.", category='danger')
+            # Add the item to the cart
+            Cart.add_to_cart(user_id=current_user.id, product_id=p_item_object.id, quantity=1)
+            flash(f"{p_item_object.title} added to your cart.", category='success')
         return redirect(url_for('market'))
 
     products_data = Product.query.all()
@@ -69,14 +66,11 @@ def category(category):
         purchased_item = request.form.get('purchased_item')
         p_item_object = Product.query.filter_by(title=purchased_item).first()
         if p_item_object:
-            if current_user.can_purchase(p_item_object):
-                # Add the item to the cart
-                Cart.add_to_cart(user_id=current_user.id, product_id=p_item_object.id, quantity=1)
-                flash(f"{p_item_object.title} added to your cart.", category='success')
-                # Store the category information in the session
-                session['last_category'] = category
-            else:
-                flash(f"Unfortunately you don't have enough money to purchase {p_item_object.title}.", category='danger')
+            # Add the item to the cart
+            Cart.add_to_cart(user_id=current_user.id, product_id=p_item_object.id, quantity=1)
+            flash(f"{p_item_object.title} added to your cart.", category='success')
+            # Store the category information in the session
+            session['last_category'] = category
 
         # Redirect back to the same category page
         return redirect(url_for('category', category=category))
@@ -244,14 +238,8 @@ def payment_callback():
             # Update order status
             order = Order.query.filter_by(id=tx_ref).first()
             if order:
-                order.status = 'Pending' 
+                order.status = 'Pending'
                 db.session.commit()
-                
-                # Update user's budget
-                user = User.query.get(order.user_id)
-                if user:
-                    user.budget -= order.total_price
-                    db.session.commit()
         
         return jsonify({'status': 'success'})
     except Exception as e:
@@ -342,18 +330,14 @@ def cancel_order(product_id):
     ordered_item = OrderItem.query.join(Order).filter(and_(OrderItem.product_id == product_id, Order.user_id == current_user.id)).first()
 
     if ordered_item:
-        # Retrieve the price of the canceled product
-        canceled_product_price = ordered_item.product_price * ordered_item.quantity
-
-        # Delete the ordered item
-        db.session.delete(ordered_item)
+        # Get the order associated with this item
+        order = ordered_item.order
+        
+        # Set the order status to Cancelled
+        order.status = 'Cancelled'
         db.session.commit()
-
-        # Increase the user's budget by the canceled product's price
-        current_user.budget += canceled_product_price
-        db.session.commit()
-
-        flash('Order cancelled successfully! Your money is refunded!.', 'success')
+        
+        flash('Order cancelled successfully!', 'success')
     else:
         flash('Ordered item not found or you are not authorized to cancel this order.', 'danger')
 
@@ -372,7 +356,6 @@ def signup():
         user_to_create = User(username=form.username.data,
                               email=form.email.data,
                               phone=form.phone.data,
-                              budget=form.budget.data + 1000,
                               dob=form.dob.data,
                               password=form.password1.data)
         db.session.add(user_to_create)
@@ -481,12 +464,6 @@ def update_info():
     # Check if the user already has an email address, and set the default value accordingly
     if not update_info.email.data:
         update_info.email.data = current_user.email
-
-    # Check if the user already has a budget value, and set the default value accordingly
-    if not update_info.budget.data:
-        update_info.budget.data = current_user.budget
-
-
     
     if update_info.validate_on_submit():
         # Get the current user's ID
@@ -500,7 +477,6 @@ def update_info():
             user.username = update_info.username.data
             user.email = update_info.email.data
             user.phone = update_info.phone.data
-            user.budget = update_info.budget.data
             
             # Commit the changes to the database
             db.session.commit()

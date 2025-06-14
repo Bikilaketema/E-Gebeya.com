@@ -47,9 +47,6 @@ class SignupForm(FlaskForm):
     dob = DateField(label="Date of birth",
     validators=[DataRequired(message="You have to enter a valid birthday!")])
 
-    budget = IntegerField(label="Enter your budget",
-    validators=[DataRequired("Please enter your budget!")])
-
     password1 = PasswordField(label="Password",
     validators=[Length(min=6),DataRequired(message="You must insert the same password twice!")])
     password2 = PasswordField(label="Confirm password",validators=[EqualTo('password1'),DataRequired("You must insert the same password twice!")])
@@ -90,8 +87,6 @@ class UpdateInfoForm(FlaskForm):
                                 message="Phone number must be a number between 1-9 and 9 digits. It must be without zero"
                             )
                         ])
-
-    budget = FloatField(label="Enter your budget", validators=[DataRequired("Please enter your budget!")])
 
     def validate_username(self, username_to_check):
         if username_to_check.data != current_user.username:  # Skip validation if username matches current user's username
