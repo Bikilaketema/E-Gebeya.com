@@ -2,10 +2,23 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__, static_folder='static')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///eGEBEYA.db'
-app.config['SECRET_KEY'] = 'fcb0ee019ec342566c4d4dac'
+
+# Load configuration from environment variables
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
+app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
+
+# Chapa Configuration
+app.config['CHAPA_SECRET_KEY'] = os.getenv('CHAPA_SECRET_KEY')
+app.config['CHAPA_PUBLIC_KEY'] = os.getenv('CHAPA_PUBLIC_KEY')
+app.config['CHAPA_BASE_URL'] = 'https://api.chapa.co/v1'
+
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)

@@ -1,4 +1,4 @@
-from flask import render_template, redirect,url_for,flash,request
+from flask import render_template, redirect,url_for,flash,request, jsonify
 from packages import app,bcrypt
 from packages import db
 from packages.forms import SignupForm, LoginForm, PurchaseItemForm, UpdateInfoForm, DeleteAccountForm, ChangePasswordForm
@@ -8,6 +8,7 @@ from flask_bcrypt import check_password_hash, generate_password_hash
 from flask import session
 from sqlalchemy import desc,and_
 from sqlalchemy.orm import joinedload
+from packages.payment import initialize_payment, verify_payment
 
 # Define the get_cart_count function
 def get_cart_count():
@@ -181,15 +182,10 @@ def checkout():
     # Calculate total price
     total_price = sum(cart_item.product.price * cart_item.quantity for cart_item in cart_items)
 
-    # Check if user can afford all items
-    if not current_user.can_afford_total(total_price):
-        flash("You don't have enough budget to purchase all items in your cart.", 'danger')
-        return redirect(url_for('cart'))
-
-    # Create an order
-    order = Order(user_id=current_user.id, total_price=total_price)
+    # Create an order with Waiting payment status
+    order = Order(user_id=current_user.id, total_price=total_price, status='Waiting payment')
     db.session.add(order)
-    db.session.commit()
+    db.session.commit()  # Commit to get the order ID
 
     # Create order items
     for cart_item in cart_items:
@@ -200,18 +196,144 @@ def checkout():
             product_price=cart_item.product.price
         )
         db.session.add(order_item)
+    
+    db.session.commit()  # Commit the order items
 
-    # Update user's budget
-    current_user.budget -= total_price
-    db.session.commit()
+    # Initialize payment with Chapa
+    try:
+        payment_response = initialize_payment(
+            order_id=order.id,
+            amount=total_price,
+            email=current_user.email,
+            first_name=current_user.username,
+            last_name=current_user.username
+        )
+        
+        if payment_response.get('status') == 'success':
+            # Don't clear the cart yet - wait for successful payment
+            return redirect(payment_response['data']['checkout_url'])
+        else:
+            # If payment initialization fails, delete the order and its items
+            OrderItem.query.filter_by(order_id=order.id).delete()
+            Order.query.filter_by(id=order.id).delete()
+            db.session.commit()
+            
+            flash('Payment initialization failed. Please try again.', 'danger')
+            return redirect(url_for('cart'))
+            
+    except Exception as e:
+        # If there's an error, delete the order and its items
+        OrderItem.query.filter_by(order_id=order.id).delete()
+        Order.query.filter_by(id=order.id).delete()
+        db.session.commit()
+        
+        flash(f'An error occurred: {str(e)}', 'danger')
+        return redirect(url_for('cart'))
 
-    # Clear the user's cart
-    Cart.query.filter_by(user_id=current_user.id).delete()
-    db.session.commit()
+@app.route('/payment/callback', methods=['POST'])
+def payment_callback():
+    """Handle payment callback from Chapa"""
+    try:
+        transaction_id = request.form.get('transaction_id')
+        tx_ref = request.form.get('tx_ref')
+        
+        # Verify the payment
+        verification = verify_payment(transaction_id)
+        
+        if verification.get('status') == 'success':
+            # Update order status
+            order = Order.query.filter_by(id=tx_ref).first()
+            if order:
+                order.status = 'Pending' 
+                db.session.commit()
+                
+                # Update user's budget
+                user = User.query.get(order.user_id)
+                if user:
+                    user.budget -= order.total_price
+                    db.session.commit()
+        
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 400
 
-    flash('Your order has been placed successfully!', 'success')
-    return redirect(url_for('dashboard')) 
-
+@app.route('/payment/success')
+@login_required
+def payment_success():
+    """Handle successful payment return"""
+    # Debug: Print all request data
+    print("Request args:", dict(request.args))
+    print("Request form:", dict(request.form))
+    print("Request headers:", dict(request.headers))
+    
+    # Get transaction reference from Chapa's response
+    tx_ref = request.args.get('trx_ref') or request.args.get('tx_ref')
+    print("Transaction reference:", tx_ref)
+    
+    if not tx_ref:
+        # If no transaction reference, try to get the latest waiting payment order
+        latest_order = Order.query.filter_by(
+            user_id=current_user.id,
+            status='Waiting payment'
+        ).order_by(Order.created_at.desc()).first()
+        
+        if latest_order:
+            print("Found latest waiting payment order:", latest_order.id)
+            order = latest_order
+            
+            # Clear the user's cart
+            Cart.query.filter_by(user_id=current_user.id).delete()
+            
+            # Update order status to Pending (for paid orders)
+            order.status = 'Pending'
+            db.session.commit()
+            
+            # Join with Product table to get product details
+            order_items = db.session.query(OrderItem, Product).join(
+                Product, OrderItem.product_id == Product.id
+            ).filter(OrderItem.order_id == order.id).all()
+            
+            # Extract OrderItem objects from the joined query
+            order_items = [item[0] for item in order_items]
+            total = sum(item.product_price * item.quantity for item in order_items)
+            
+            return render_template('receipt.html', 
+                                order=order,
+                                order_items=order_items,
+                                total=total,
+                                user=current_user)
+    
+    # If we have a transaction reference, try to find the order
+    order = Order.query.filter_by(id=tx_ref).first()
+    if order:
+        print("Found order by tx_ref:", order.id)
+        
+        # Clear the user's cart
+        Cart.query.filter_by(user_id=current_user.id).delete()
+        
+        # Update order status to Pending (for paid orders)
+        order.status = 'Pending'
+        db.session.commit()
+        
+        # Join with Product table to get product details
+        order_items = db.session.query(OrderItem, Product).join(
+            Product, OrderItem.product_id == Product.id
+        ).filter(OrderItem.order_id == order.id).all()
+        
+        # Extract OrderItem objects from the joined query
+        order_items = [item[0] for item in order_items]
+        total = sum(item.product_price * item.quantity for item in order_items)
+        
+        return render_template('receipt.html', 
+                            order=order,
+                            order_items=order_items,
+                            total=total,
+                            user=current_user)
+    
+    # If we get here, we couldn't find the order
+    print("No order found for tx_ref:", tx_ref)
+    flash('Payment successful! Your order has been placed.', 'success')
+    return redirect(url_for('dashboard'))
 
 @app.route('/cancel_order/<int:product_id>', methods=['POST'])
 @login_required
@@ -305,7 +427,6 @@ def dashboard():
         user = User.query.get(user_id)
 
         if user:
-
             # Delete the user account from the database
             db.session.delete(user)
             db.session.commit()
@@ -315,13 +436,16 @@ def dashboard():
             return redirect(url_for('index'))
 
     # Fetch pending orders and associated items using a single query
-    user_pending_orders = Order.query.filter_by(user_id=current_user.id, status='Pending').options(joinedload(Order.items)).order_by(desc(Order.created_at)).all()
+    user_orders = Order.query.filter_by(
+        user_id=current_user.id,
+        status='Pending'  # Show orders with Pending status (paid orders)
+    ).options(joinedload(Order.items)).order_by(desc(Order.created_at)).all()
 
     # Initialize a dictionary to store ordered items and their quantities
     ordered_items = {}
 
-    # Fetch items and their quantities from each pending order
-    for order in user_pending_orders:
+    # Fetch items and their quantities from each order
+    for order in user_orders:
         for order_item in order.items:
             product_id = order_item.product_id
             quantity = order_item.quantity
@@ -332,7 +456,11 @@ def dashboard():
                 if product:
                     ordered_items[product_id] = {'product': product, 'quantity': quantity}
 
-    return render_template('dashboard.html', user=current_user, ordered_items=ordered_items.values(), purchase_form=purchase_form, delete_form=delete_form)
+    return render_template('dashboard.html', 
+                         user=current_user, 
+                         ordered_items=ordered_items.values(), 
+                         purchase_form=purchase_form, 
+                         delete_form=delete_form)
 
 
 

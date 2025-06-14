@@ -1,5 +1,5 @@
 bcrypt==3.2.0
-Flask
+Flask==2.0.1
 Flask-SQLAlchemy==3.1.1
 pip~=23.2.1
 wheel~=0.41.0
@@ -11,3 +11,4 @@ flask_bcrypt
 flask_login
 flask_migrate
 email_validator
+python-dotenv==1.0.0
