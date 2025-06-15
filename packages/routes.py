@@ -101,12 +101,9 @@ def update_cart():
     product_id = request.form.get('product_id')
 
     # Check if product_id is provided and valid
-    if not product_id or not product_id.isdigit():
+    if not product_id:
         flash('Invalid product ID', 'danger')
         return redirect(url_for('cart'))
-
-    # Convert product_id to integer
-    product_id = int(product_id)
 
     # Get the action (increase/decrease) from the form
     action = request.form.get('action')
@@ -145,7 +142,7 @@ def update_cart():
     flash('Cart updated successfully!', 'success')
     return redirect(url_for('cart'))
 
-@app.route('/delete_item_from_cart/<int:item_id>', methods=['POST'])
+@app.route('/delete_item_from_cart/<string:item_id>', methods=['POST'])
 @login_required
 def delete_item_from_cart(item_id):
     # Find the cart entry for the item
@@ -323,7 +320,7 @@ def payment_success():
     flash('Payment successful! Your order has been placed.', 'success')
     return redirect(url_for('dashboard'))
 
-@app.route('/cancel_order/<int:product_id>', methods=['POST'])
+@app.route('/cancel_order/<string:product_id>', methods=['POST'])
 @login_required
 def cancel_order(product_id):
     # Find the ordered item by product_id and current user
