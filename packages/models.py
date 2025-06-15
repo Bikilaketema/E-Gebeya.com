@@ -1,13 +1,14 @@
 from packages import db,bcrypt,login_manager
 from flask_login import UserMixin
 from datetime import datetime
+import uuid
 
 
 
 
 class Order(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=False)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
     items = db.relationship('OrderItem', backref='order', lazy=True)
     total_price = db.Column(db.Integer(), nullable=False)
     status = db.Column(db.String(length=20), nullable=False, default='Pending')  # 'Pending', 'Completed', 'Cancelled'
@@ -15,9 +16,9 @@ class Order(db.Model):
 
 
 class OrderItem(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    order_id = db.Column(db.Integer(), db.ForeignKey('order.id'), nullable=False)
-    product_id = db.Column(db.Integer(), db.ForeignKey('product.id'), nullable=False)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    order_id = db.Column(db.String(36), db.ForeignKey('order.id'), nullable=False)
+    product_id = db.Column(db.String(36), db.ForeignKey('product.id'), nullable=False)
     quantity = db.Column(db.Integer(), nullable=False)
     product_price = db.Column(db.Integer(), nullable=False)
 
@@ -26,9 +27,9 @@ class OrderItem(db.Model):
         return self.quantity * self.product_price
 
 class Cart(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=False)
-    product_id = db.Column(db.Integer(), db.ForeignKey('product.id'), nullable=False)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
+    product_id = db.Column(db.String(36), db.ForeignKey('product.id'), nullable=False)
     quantity = db.Column(db.Integer(), nullable=False, default=1)
     product = db.relationship('Product', backref='cart_entries')
 
@@ -56,7 +57,7 @@ class Cart(db.Model):
 
 
 class Product(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     title = db.Column(db.String(length=20), nullable=False, unique=True)
     category = db.Column(db.String(length=20), nullable=False)
     image = db.Column(db.String(length=20), nullable=False, unique=True)
@@ -64,16 +65,16 @@ class Product(db.Model):
     description = db.Column(db.String(length=1024), nullable=False, unique=True)
 
 class Category(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(length=20), nullable=False, unique=True)
     image = db.Column(db.String(length=20), nullable=False, unique=True)
 
 @login_manager.user_loader
 def Load_user(user_id):
-    return User.query.get(int(user_id))
+    return User.query.get(str(user_id))
     
 class User(db.Model, UserMixin):
-    id = db.Column(db.Integer(), primary_key=True)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     username = db.Column(db.String(length=20), nullable=False, unique=True)
     email = db.Column(db.String(length=20), nullable=False, unique=True)
     phone = db.Column(db.String(), nullable=False, unique=True)
