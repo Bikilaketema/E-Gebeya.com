@@ -1,4 +1,4 @@
-from chapa.api import Chapa
+from chapa import Chapa
 from flask import current_app, url_for
 
 def initialize_payment(order_id, amount, email, first_name, last_name):
